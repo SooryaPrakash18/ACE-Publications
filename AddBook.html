@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Add New Book</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+    <style>
+        .quantity-container {
+            position: relative;
+        }
+
+        .quantity-input {
+            text-align: center;
+            padding-right: 40px;
+        }
+
+        .quantity-controls {
+            position: absolute;
+            right: 5px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            height: 30px;
+        }
+
+        .quantity-btn {
+            background: #007bff;
+            color: white;
+            border: none;
+            width: 25px;
+            height: 15px;
+            font-size: 10px;
+            line-height: 1;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 2px;
+        }
+
+        .quantity-btn:hover {
+            background: #0056b3;
+        }
+
+        .quantity-btn:active {
+            background: #004085;
+        }
+
+        .quantity-btn.up {
+            margin-bottom: 1px;
+        }
+
+        .image-preview {
+            max-width: 200px;
+            max-height: 200px;
+            margin-top: 10px;
+            border-radius: 5px;
+            display: none;
+            border: 2px solid #dee2e6;
+        }
+
+        .upload-area {
+            border: 2px dashed #dee2e6;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            background-color: #f8f9fa;
+            cursor: pointer;
+            transition: border-color 0.3s ease;
+        }
+
+        .upload-area:hover {
+            border-color: #007bff;
+            background-color: #e3f2fd;
+        }
+
+        .upload-area.dragover {
+            border-color: #007bff;
+            background-color: #e3f2fd;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .upload-icon {
+            font-size: 48px;
+            color: #6c757d;
+            margin-bottom: 10px;
+        }
+
+        .upload-text {
+            color: #6c757d;
+            font-size: 16px;
+        }
+
+        .file-info {
+            background-color: #e9ecef;
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 10px;
+            display: none;
+        }
+
+        .error-message {
+            color: #dc3545;
+            font-size: 0.875em;
+            margin-top: 5px;
+        }
+
+        .success-message {
+            color: #28a745;
+            font-size: 0.875em;
+            margin-top: 5px;
+        }
+
+        .warning-message {
+            color: #ffc107;
+            font-size: 0.875em;
+            margin-top: 5px;
+        }
+
+        .validation-message {
+            margin-top: 5px;
+            font-size: 0.875em;
+        }
+
+        .remove-image {
+            background: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            cursor: pointer;
+            display: none;
+        }
+
+        .image-container {
+            position: relative;
+            display: inline-block;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container my-5">
+        <h3 class="text-center mb-4">Add New Book</h3>
+        <form action="add_book.php" method="POST" enctype="multipart/form-data" id="bookForm">
+            <div class="form-group">
+                <label for="bookImage">Book Image</label>
+
+                <!-- Upload Area -->
+                <div class="upload-area" id="uploadArea" onclick="document.getElementById('bookImage').click()">
+                    <div class="upload-icon">📁</div>
+                    <div class="upload-text">
+                        <strong>Click to select an image</strong> or drag and drop<br>
+                        <small>Supported formats: JPG, PNG, GIF, WEBP (Max: 5MB)</small>
+                    </div>
+                </div>
+
+                <!-- Hidden File Input -->
+                <input type="file" class="file-input" id="bookImage" name="book_image" accept="image/*" required />
+
+                <!-- File Info Display -->
+                <div id="fileInfo" class="file-info">
+                    <strong>Selected file:</strong> <span id="fileName"></span><br>
+                    <strong>Size:</strong> <span id="fileSize"></span>
+                </div>
+
+                <!-- Image Preview -->
+                <div class="image-container">
+                    <img id="imagePreview" class="image-preview" alt="Book Preview" />
+                    <button type="button" class="remove-image" id="removeImage"
+                        onclick="removeSelectedImage()">×</button>
+                </div>
+
+                <div id="imageMessage"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="productName">Book Name</label>
+                <input type="text" name="name" class="form-control" id="productName" placeholder="Enter the Book name"
+                    required />
+                <div id="nameMessage" class="validation-message"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="productPrice">Book Price</label>
+                <input type="number" step="0.01" name="price" class="form-control" id="productPrice"
+                    placeholder="Enter the Book price" required />
+            </div>
+
+            <div class="form-group">
+                <label for="productQuantity">Book Quantity</label>
+                <div class="quantity-container">
+                    <input type="number" name="quantity" class="form-control quantity-input" id="productQuantity"
+                        placeholder="Enter the Book quantity" value="1" min="0" required />
+                    <div class="quantity-controls">
+                        <button type="button" class="quantity-btn up" onclick="incrementQuantity()">▲</button>
+                        <button type="button" class="quantity-btn down" onclick="decrementQuantity()">▼</button>
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-block" id="submitBtn">Add Book</button>
+        </form>
+    </div>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script>
+        const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+        const ALLOWED_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+
+        function incrementQuantity() {
+            const quantityInput = document.getElementById('productQuantity');
+            let currentValue = parseInt(quantityInput.value) || 0;
+            quantityInput.value = currentValue + 1;
+        }
+
+        function decrementQuantity() {
+            const quantityInput = document.getElementById('productQuantity');
+            let currentValue = parseInt(quantityInput.value) || 0;
+            if (currentValue > 0) {
+                quantityInput.value = currentValue - 1;
+            }
+        }
+
+        // Allow keyboard input and ensure valid numbers
+        document.getElementById('productQuantity').addEventListener('input', function (e) {
+            let value = parseInt(e.target.value);
+            if (isNaN(value) || value < 0) {
+                e.target.value = 0;
+            }
+        });
+
+        function showMessage(elementId, message, type = 'info') {
+            const messageDiv = document.getElementById(elementId);
+            messageDiv.className = `validation-message ${type}-message`;
+            messageDiv.textContent = message;
+        }
+
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        function validateFile(file) {
+            // Check file type
+            if (!ALLOWED_TYPES.includes(file.type)) {
+                showMessage('imageMessage', 'Error: Please select a valid image file (JPG, PNG, GIF, WEBP)', 'error');
+                return false;
+            }
+
+            // Check file size
+            if (file.size > MAX_FILE_SIZE) {
+                showMessage('imageMessage', 'Error: File size must be less than 5MB', 'error');
+                return false;
+            }
+
+            return true;
+        }
+
+        function displayFileInfo(file) {
+            document.getElementById('fileName').textContent = file.name;
+            document.getElementById('fileSize').textContent = formatFileSize(file.size);
+            document.getElementById('fileInfo').style.display = 'block';
+        }
+
+        function showImagePreview(file) {
+            const reader = new FileReader();
+            const preview = document.getElementById('imagePreview');
+            const removeBtn = document.getElementById('removeImage');
+
+            reader.onload = function (e) {
+                preview.src = e.target.result;
+                preview.style.display = 'block';
+                removeBtn.style.display = 'block';
+                showMessage('imageMessage', '✓ Image loaded successfully', 'success');
+            };
+
+            reader.readAsDataURL(file);
+        }
+
+        function removeSelectedImage() {
+            const fileInput = document.getElementById('bookImage');
+            const preview = document.getElementById('imagePreview');
+            const removeBtn = document.getElementById('removeImage');
+            const fileInfo = document.getElementById('fileInfo');
+            const uploadArea = document.getElementById('uploadArea');
+
+            // Reset file input
+            fileInput.value = '';
+
+            // Hide preview and info
+            preview.style.display = 'none';
+            preview.src = '';
+            removeBtn.style.display = 'none';
+            fileInfo.style.display = 'none';
+
+            // Show upload area again
+            uploadArea.style.display = 'block';
+
+            showMessage('imageMessage', '', 'info');
+        }
+
+        // Handle file selection
+        document.getElementById('bookImage').addEventListener('change', function (e) {
+            const file = e.target.files[0];
+            const uploadArea = document.getElementById('uploadArea');
+
+            if (file) {
+                if (validateFile(file)) {
+                    displayFileInfo(file);
+                    showImagePreview(file);
+                    uploadArea.style.display = 'none';
+                } else {
+                    // Reset file input if validation fails
+                    e.target.value = '';
+                }
+            }
+        });
+
+        // Drag and drop functionality
+        const uploadArea = document.getElementById('uploadArea');
+
+        uploadArea.addEventListener('dragover', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            uploadArea.classList.add('dragover');
+        });
+
+        uploadArea.addEventListener('dragleave', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            uploadArea.classList.remove('dragover');
+        });
+
+        uploadArea.addEventListener('drop', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            uploadArea.classList.remove('dragover');
+
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                const file = files[0];
+
+                // Set the file to the input element
+                const fileInput = document.getElementById('bookImage');
+                const dataTransfer = new DataTransfer();
+                dataTransfer.items.add(file);
+                fileInput.files = dataTransfer.files;
+
+                if (validateFile(file)) {
+                    displayFileInfo(file);
+                    showImagePreview(file);
+                    uploadArea.style.display = 'none';
+                }
+            }
+        });
+
+        // Handle book name input
+        document.getElementById('productName').addEventListener('input', function (e) {
+            const bookName = e.target.value.trim();
+            if (bookName === '') {
+                showMessage('nameMessage', '', 'info');
+            } else {
+                showMessage('nameMessage', 'Book name will be checked for duplicates on submission', 'info');
+            }
+        });
+
+        // Form submission validation
+        document.getElementById('bookForm').addEventListener('submit', function (e) {
+            const fileInput = document.getElementById('bookImage');
+            const bookName = document.getElementById('productName').value.trim();
+
+            if (!fileInput.files || fileInput.files.length === 0) {
+                e.preventDefault();
+                alert('Please select an image file');
+                return false;
+            }
+
+            if (bookName === '') {
+                e.preventDefault();
+                alert('Please enter a book name');
+                return false;
+            }
+
+            const file = fileInput.files[0];
+            if (!validateFile(file)) {
+                e.preventDefault();
+                return false;
+            }
+
+            // Show loading state
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Adding Book...';
+        });
+    </script>
+</body>
+
+</html>

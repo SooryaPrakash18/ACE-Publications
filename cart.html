@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Cart page</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://unpkg.com/swiper@7/swiper-bundle.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <link rel="stylesheet" href="./css/cart.css">
+  <link rel="stylesheet" href="./css/style.css">
+  <link rel="apple-touch-icon" sizes="180x180" href="./favicon_io/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="./favicon_io/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="./favicon_io/favicon-16x16.png">
+  <link rel="manifest" href="./favicon_io/site.webmanifest">
+  <style>
+    .qty-btn {
+      padding: 4px 10px;
+      margin: 0 2px;
+      background-color: #eee;
+      border: 1px solid #ccc;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .qty {
+      width: 40px;
+      text-align: center;
+    }
+
+    table {
+      width: 90%;
+      margin: 20px auto;
+      border-collapse: collapse;
+    }
+
+    table,
+    th,
+    td {
+      border: 1px solid #ddd;
+    }
+
+    th,
+    td {
+      padding: 10px;
+      text-align: center;
+    }
+
+    th {
+      background-color: #f4f4f4;
+    }
+
+    .remove {
+      color: red;
+      cursor: pointer;
+    }
+
+    #clear-cart-btn {
+      background-color: #e74c3c;
+      color: white;
+      padding: 8px 16px;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      margin: 20px auto;
+      display: block;
+      border-radius: 4px;
+    }
+
+    #clear-cart-btn:hover {
+      background-color: #c0392b;
+    }
+
+    .subtotal {
+      width: 60%;
+      max-width: 600px;
+      margin: 20px auto;
+      background-color: #f9f9f9;
+      padding: 15px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .subtotal ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .subtotal li {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 6px 0;
+      font-size: 16px;
+      border-bottom: 1px solid #ddd;
+    }
+
+    .subtotal li:last-child {
+      border-bottom: none;
+    }
+
+    .final {
+      font-weight: bold;
+      font-size: 18px;
+    }
+
+    .btn.continue {
+      display: inline-block;
+      margin-top: 12px;
+      background-color: #27ae60;
+      color: white;
+      padding: 10px 20px;
+      text-decoration: none;
+      border-radius: 5px;
+      font-size: 16px;
+    }
+
+    .btn.continue:hover {
+      background-color: #219150;
+    }
+
+
+    .btn.continue {
+      display: inline-block;
+      margin-top: 10px;
+      background-color: #27ae60;
+      color: white;
+      padding: 10px 20px;
+      text-decoration: none;
+      border-radius: 5px;
+    }
+
+    .btn.continue:hover {
+      background-color: #219150;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="header-1">
+      <a href="#" class="logo"><i class="fas fa-book"></i> ACE Publication</a>
+      <div class="icons">
+        <a href="cart.html" class="fas fa-shopping-cart"></a>
+      </div>
+    </div>
+    <div class="header-2">
+      <nav class="navbar">
+        <a href="row.php">Home</a>
+        <a href="ebook.html">E-Book Reader</a>
+        <a href="#">Category</a>
+        <a href="#reviews">Reviews</a>
+        <a href="error.html">Journal</a>
+        <a href="feedback.html">Feedback</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Cart Table -->
+  <div id="cart-container">
+    <table id="cart-table">
+      <thead>
+        <tr>
+          <th>S.No</th>
+          <th>Book Name</th>
+          <th>Quantity</th>
+          <th>Rupees</th>
+          <th>Remove</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Items will be inserted here -->
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Clear Cart -->
+  <button id="clear-cart-btn">Clear Cart</button>
+
+  <!-- Totals Section -->
+  <div class="subtotal cf">
+    <ul>
+      <li class="totalRow"><span class="label">Subtotal</span><span class="value">₹0.00</span></li>
+      <li class="totalRow"><span class="label">Shipping</span><span class="value">₹50.00</span></li>
+      <li class="totalRow"><span class="label">Tax</span><span class="value">₹50.00</span></li>
+      <li class="totalRow final"><span class="label">Total</span><span class="value">₹0.00</span></li>
+      <li class="totalRow"><a href="https://razorpay.me/@sooryaprakash" class="btn continue">Checkout</a></li>
+    </ul>
+  </div>
+
+  <!-- JavaScript -->
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const cartTableBody = document.querySelector('#cart-table tbody');
+      const clearCartBtn = document.getElementById('clear-cart-btn');
+      let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+      function renderCart() {
+        cartTableBody.innerHTML = '';
+
+        if (cart.length === 0) {
+          cartTableBody.innerHTML = `<tr><td colspan="5">Your cart is empty.</td></tr>`;
+          updateTotals();
+          return;
+        }
+
+        cart.forEach((item, index) => {
+          const quantity = item.quantity || 1;
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td>${index + 1}</td>
+            <td>${item.title}</td>
+            <td>
+              <button class="qty-btn minus" data-index="${index}">-</button>
+              <input type="text" class="qty" value="${quantity}" data-price="${item.price}" data-index="${index}">
+              <button class="qty-btn plus" data-index="${index}">+</button>
+            </td>
+            <td class="price">₹${(item.price * quantity).toFixed(2)}</td>
+            <td><span class="remove" data-index="${index}">Remove</span></td>
+          `;
+          cartTableBody.appendChild(row);
+        });
+
+        updateTotals();
+      }
+
+      function updateTotals() {
+        let subtotal = 0;
+
+        // Only calculate subtotal if there are items in cart
+        if (cart.length > 0) {
+          document.querySelectorAll('.qty').forEach(input => {
+            const price = parseFloat(input.dataset.price);
+            const quantity = parseInt(input.value);
+            subtotal += price * quantity;
+
+            const row = input.closest('tr');
+            row.querySelector('.price').textContent = `₹${(price * quantity).toFixed(2)}`;
+          });
+        }
+
+        // Shipping and tax only apply when there are items in cart
+        const shipping = cart.length > 0 ? 50 : 0;
+        const tax = cart.length > 0 ? 50 : 0;
+        const total = subtotal + shipping + tax;
+
+        document.querySelector('.subtotal .totalRow:nth-child(1) .value').textContent = '₹' + subtotal.toFixed(2);
+        document.querySelector('.subtotal .totalRow:nth-child(2) .value').textContent = '₹' + shipping.toFixed(2);
+        document.querySelector('.subtotal .totalRow:nth-child(3) .value').textContent = '₹' + tax.toFixed(2);
+        document.querySelector('.subtotal .totalRow.final .value').textContent = '₹' + total.toFixed(2);
+      }
+
+      cartTableBody.addEventListener('click', function (e) {
+        const index = e.target.dataset.index;
+
+        if (e.target.classList.contains('plus') || e.target.classList.contains('minus')) {
+          const input = document.querySelector(`.qty[data-index="${index}"]`);
+          let quantity = parseInt(input.value);
+
+          if (e.target.classList.contains('plus')) quantity++;
+          if (e.target.classList.contains('minus') && quantity > 1) quantity--;
+
+          input.value = quantity;
+          cart[index].quantity = quantity;
+          localStorage.setItem('cart', JSON.stringify(cart));
+          updateTotals();
+        }
+
+        if (e.target.classList.contains('remove')) {
+          cart.splice(index, 1);
+          localStorage.setItem('cart', JSON.stringify(cart));
+          renderCart();
+        }
+      });
+
+      clearCartBtn.addEventListener('click', () => {
+        cart = [];
+        localStorage.removeItem('cart');
+        renderCart();
+      });
+
+      renderCart();
+    });
+  </script>
+</body>
+
+</html>

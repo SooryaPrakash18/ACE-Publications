@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>403 Error</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f8f9fa;
+            margin: 0;
+        }
+
+        .error-container {
+            text-align: center;
+        }
+
+        .error-container h1 {
+            font-size: 4rem;
+            animation: fadeInTop 1s;
+        }
+
+        .error-container hr {
+            width: 50%;
+            border-top: 3px solid #343a40;
+            animation: fadeInLeft 1.5s;
+        }
+
+        body {
+            background-color: #100;
+            color: white;
+        }
+
+        code {
+            color: red;
+        }
+
+        h2 {
+            color: red;
+            font-weight: 100;
+            text-decoration: none;
+        }
+
+        .error-container h3 {
+            margin: 20px 0;
+            animation: fadeInRight 2s;
+        }
+
+        .error-container h6 {
+            margin-top: 30px;
+            animation: zoomIn 2.5s;
+        }
+
+        @keyframes fadeInTop {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-50px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes fadeInRight {
+            from {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes zoomIn {
+            from {
+                opacity: 0;
+                transform: scale(0.5);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="css/403.css">
+</head>
+
+<body>
+    <div class="error-container">
+        <h1 class="display-4"><code>Sites in under construction</code></h1>
+        <hr>
+        <h3>You don't have permission to view this site.</h3>
+
+        <h2><strong>Error Code</strong>: 403 Forbidden</h2>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,94 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-image: url("assets/images/book.jpg");
+    color: #343a40;
+    transition: background-color 0.3s, color 0.3s;
+
+}
+
+.navbar {
+    margin-bottom: 20px;
+    background-image: linear-gradient(to right, #0062cc, #0056b3);
+}
+
+.navbar-brand {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #ffffff;
+    transition: color 0.3s;
+}
+
+.nav-link {
+    font-size: 1.1rem;
+    color: #ffffff;
+    transition: color 0.3s;
+}
+
+.nav-link:hover {
+    color: #ffdd57;
+}
+
+.container {
+    padding: 20px;
+    background-color: #ffffff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+.container:hover {
+    background-color: #f1f1f1;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+}
+
+.list-group-item {
+    cursor: pointer;
+    font-size: 1.2rem;
+    transition: background-color 0.3s, color 0.3s;
+    background-color: #ffffff;
+}
+
+.list-group-item.active {
+    background-color: #0056b3;
+    color: #ffffff;
+    border-color: #0056b3;
+}
+
+.list-group-item:hover {
+    background-color: #17a2b8;
+    color: #ffffff;
+}
+
+.tab-content {
+    margin-top: 20px;
+    padding: 20px;
+    background-color: #ffffff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+.tab-content:hover {
+    background-color: #f1f1f1;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+}
+
+h2 {
+    margin-top: 0;
+    color: #007bff;
+    transition: color 0.3s;
+}
+
+h2:hover {
+    color: #0056b3;
+}
+
+p {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    transition: color 0.3s;
+}
+
+p:hover {
+    color: #555555;
+}
